@@ -99,10 +99,14 @@ void setup()
   WiFi.persistent(false);
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASS);
+  Serial.println("Connecting to WiFi");
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
+    Serial.print(".");
   }
+  Serial.println();
+  Serial.println("Connected to WiFi");
 
   Serial.println("Routes:");
   Serial.println("- http://" + WiFi.localIP().toString() + "/frame.jpg");
