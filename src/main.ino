@@ -8,44 +8,45 @@
 #include <esp32cam.h>
 
 // WiFi credentials
-
 const char *WIFI_SSID = "**********";
 const char *WIFI_PASS = "**********";
 
 WebServer server(80);
 
+const int ledPin = 4; // Pino do LED flash
+
 // Default resolution for image capture
-static auto resolution = esp32cam::Resolution::find(1024, 768);
-
-/**
- * @brief Function to serve a captured JPEG image.
- *
- * @param frame Unique pointer to the captured frame.
- */
-void serve_jpg(std::unique_ptr<esp32cam::Frame> frame)
-{
-  Serial.println("Setting content to serve image");
-
-  server.setContentLength(frame->size());
-  server.send(200, "image/jpeg");
-  WiFiClient client = server.client();
-  frame->writeTo(client);
-  Serial.println("Image served successfully");
-}
+static auto resolution = esp32cam::Resolution::find(800, 600);
 
 /**
  * @brief Function to handle the request to capture and send a JPEG image.
  */
 void handle_jpg()
 {
-  Serial.println("Changing resolution");
+  Serial.println("Handling request...");
 
-  if (!esp32cam::Camera.changeResolution(resolution))
-    Serial.println("Failed to set resolution");
+  if (server.hasArg("flash"))
+  {
+    String flashParam = server.arg("flash");
 
-  Serial.println("Resolution set successfully");
+    if (flashParam.equalsIgnoreCase("true"))
+    {
+      digitalWrite(ledPin, HIGH);
+      Serial.println("Flash on");
+    }
+    else
+    {
+      digitalWrite(ledPin, LOW);
+      Serial.println("Flash off");
+    }
+  }
+  else
+  {
+    digitalWrite(ledPin, LOW);
+    Serial.println("Flash off (default)");
+  }
 
-  Serial.println("Capturing frame");
+  Serial.println("Capturing frame...");
   auto frame = esp32cam::capture();
   if (frame == nullptr)
   {
@@ -53,6 +54,7 @@ void handle_jpg()
     server.send(503, "", "");
     return;
   }
+
   Serial.printf("Capture successful: %dx%d, size: %d bytes\n", frame->getWidth(), frame->getHeight(),
                 static_cast<int>(frame->size()));
 
@@ -79,6 +81,9 @@ void setup()
   Serial.begin(115200);
   Serial.println();
 
+  pinMode(ledPin, OUTPUT);  
+  digitalWrite(ledPin, LOW);
+
   {
     using namespace esp32cam;
     Config cfg;
@@ -98,11 +103,13 @@ void setup()
   {
     delay(500);
   }
-  Serial.print("http://");
-  Serial.println(WiFi.localIP());
-  Serial.println("/cam.jpg");
 
-  server.on("/cam.jpg", handle_jpg);
+  Serial.println("Routes:");
+  Serial.println("- http://" + WiFi.localIP().toString() + "/frame.jpg");
+  Serial.println("Params:");
+  Serial.println("- flash: true|false (default: false)");
+
+  server.on("/frame.jpg", handle_jpg);
 
   server.begin();
 }
