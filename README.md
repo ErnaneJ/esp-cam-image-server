@@ -50,6 +50,7 @@ http://<ESP32-CAM-IP>/frame.jpg?flash=true
 ## 🛠 Troubleshooting
 - If the camera fails to initialize, check the wiring and power supply.
 - If the ESP32-CAM does not connect to Wi-Fi, verify SSID and password.
+- If necessary, install [esp32cam](https://github.com/yoursunny/esp32cam) in your Arduino IDE.
 
 ## 📖 Additional Resources
 For a step-by-step guide on setting up the ESP32-CAM with Arduino IDE, refer to this tutorial:
