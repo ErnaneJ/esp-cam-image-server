@@ -13,7 +13,7 @@ const char *WIFI_PASS = "**********";
 
 WebServer server(80);
 
-const int ledPin = 4; // Pino do LED flash
+const int ledPin = 4;
 
 // Default resolution for image capture
 static auto resolution = esp32cam::Resolution::find(800, 600);
