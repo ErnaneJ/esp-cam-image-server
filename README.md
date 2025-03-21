@@ -1,48 +1,56 @@
-# ESP32-CAM Web Server
+# ESP32-CAM Web Server 📷
 
-This file demonstrates a simple web server running on ESP32-CAM to serve captured JPEG images from the camera module.
+This project sets up an ESP32-CAM as a web server that captures and serves images via HTTP.
 
-## Features
+## 📌 Features
+- Captures images from the ESP32-CAM
+- Serves images via a web interface
+- Supports flash control via URL parameters
 
-- Captures JPEG images from ESP32-CAM.
-- Serves captured images over HTTP.
-- Supports changing image resolution dynamically.
+## 📂 Project Structure
+```
+.
+├── README.md
+├── lib
+│   └── esp32cam-main.zip (https://github.com/yoursunny/esp32cam)
+└── src
+    └── main.ino
+```
 
-## Hardware Requirements
+## 🚀 Getting Started
+### Prerequisites
+Ensure you have the following installed:
+- [Arduino IDE](https://www.arduino.cc/en/software)
+- ESP32 board support (Install via Arduino Board Manager)
+- Required libraries (WiFi, WebServer, esp32cam)
 
-- ESP32-CAM module
-- USB to UART converter for programming
-- Stable 5V power supply
+### 🔧 Setup Instructions
+1. Open `main.ino` in Arduino IDE.
+2. Replace the Wi-Fi credentials in the following lines:
+   ```cpp
+   const char *WIFI_SSID = "YOUR_WIFI_SSID";
+   const char *WIFI_PASS = "YOUR_WIFI_PASSWORD";
+   ```
+3. Select **AI Thinker ESP32-CAM** as the board.
+4. Connect the ESP32-CAM and upload the code.
 
-## Software Requirements
+### 📡 Accessing the Web Server
+After uploading, check the serial monitor for the assigned IP address. Use a web browser or API tool to request images.
 
-- Arduino IDE with ESP32 board support
-- ESP32 libraries:
-  - [WebServer](https://github.com/espressif/arduino-esp32/tree/master/libraries/WebServer)
-  - [WiFi](https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi)
-  - [esp32cam](https://github.com/espressif/arduino-esp32/tree/master/libraries/esp32cam)
+## 🌐 API Endpoints
+| Endpoint         | Method | Parameters            | Description               |
+|-----------------|--------|----------------------|---------------------------|
+| `/frame.jpg`    | GET    | `flash=true/false`  | Captures and returns an image. Default `flash=false`. |
 
-## Installation
+### Example Request
+```
+http://<ESP32-CAM-IP>/frame.jpg?flash=true
+```
 
-1. Clone or download the repository.
-2. Open `main.ino` in Arduino IDE.
-3. Install the required libraries if not already installed.
-4. Update `WIFI_SSID` and `WIFI_PASS` with your WiFi credentials.
-5. Upload the sketch to your ESP32-CAM module.
+## 🛠 Troubleshooting
+- If the camera fails to initialize, check the wiring and power supply.
+- If the ESP32-CAM does not connect to Wi-Fi, verify SSID and password.
 
-## Usage
-
-1. Connect ESP32-CAM to a power source and wait for it to connect to your WiFi network.
-2. Open Serial Monitor in Arduino IDE to view the assigned IP address.
-3. Access the camera feed using the IP address: `http://<ESP32-CAM_IP>/cam.jpg`.
-
-## Configuration
-
-- You can modify the initial camera resolution in the `setup()` function (`cfg.setResolution()`).
-- Adjust the JPEG quality in `handle_jpg()` function (`frame->toJpeg()`).
-
-## Troubleshooting
-
-- Ensure ESP32-CAM is powered correctly and connected to WiFi.
-- Check Serial Monitor for debug messages to diagnose any issues.
-- Verify that the camera initializes correctly (`Camera.begin()`).
+## 📖 Additional Resources
+For a step-by-step guide on setting up the ESP32-CAM with Arduino IDE, refer to this tutorial:
+🔗 [ESP32-CAM Setup Guide](https://www.usinainfo.com.br/blog/programando-esp32-cam-wifi-com-esp32-cam-mb/?srsltid=AfmBOoo6XoE8NmsuhhmdC9CI06Q8Ww8W3rly1uewNH0_Epc8pb4Sepsn)
